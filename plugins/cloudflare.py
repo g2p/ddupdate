@@ -161,9 +161,9 @@ class CloudflarePlugin(ServicePlugin):
         res = _call(session, request)
         return (res['id'], res['content'])
 
-    def _init_auth(self):
+    def _init_auth(self, hostname):
         """Initialize Custom Authentication for Cloudflare v4 API."""
-        user, password = get_netrc_auth('api.cloudflare.com')
+        user, password = get_netrc_auth('api.cloudflare.com', hostname)
         self._auth = CloudflareAuth(user, password)
 
     def register(self, log, hostname, ip, options):
@@ -171,7 +171,7 @@ class CloudflarePlugin(ServicePlugin):
         if not ip:
             raise ServiceError("IP must be defined.")
 
-        self._init_auth()
+        self._init_auth(hostname)
         opts = dict_of_opts(options)
 
         if 'zone' not in opts:

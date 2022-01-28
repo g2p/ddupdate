@@ -30,7 +30,7 @@ class DynuPlugin(ServicePlugin):
 
     def register(self, log, hostname, ip, options):
         """Implement ServicePlugin.register()."""
-        user, password = get_netrc_auth('api.dynu.com')
+        user, password = get_netrc_auth('api.dynu.com', hostname)
         pw_hash = hashlib.md5(password.encode()).hexdigest()
         url = self._url.format(hostname, user, pw_hash)
         if ip and ip.v4:

@@ -40,7 +40,7 @@ class DnsparkPlugin(ServicePlugin):
         url = self._url.format(hostname)
         if ip and ip.v4:
             url += "&ip=" + ip.v4
-        http_basic_auth_setup(url)
+        http_basic_auth_setup(url, targethost=hostname)
         reply = get_response(log, url).strip()
         if reply not in ['ok', 'nochange']:
             raise ServiceError("Unexpected update reply: " + reply)

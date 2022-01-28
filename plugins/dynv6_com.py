@@ -35,7 +35,7 @@ class Dynv6Plugin(ServicePlugin):
 
     def register(self, log, hostname, ip, options):
         """Implement ServicePlugin.register()."""
-        password = get_netrc_auth('dynv6.com')[1]
+        password = get_netrc_auth('dynv6.com', hostname)[1]
         query = {"hostname": hostname, "token": password}
         query['ipv4'] = ip.v4 if ip and ip.v4 else "auto"
         query['ipv6'] = ip.v6 if ip and ip.v6 else "auto"

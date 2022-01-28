@@ -36,7 +36,7 @@ class ChangeAddressPlugin(ServicePlugin):
         url = self._url.format(hostname)
         if ip:
             url += "&ip=" + ip.v4
-        http_basic_auth_setup(url)
+        http_basic_auth_setup(url, targethost=hostname)
         html = get_response(log, url)
         if not 'uccessful' in html:
             raise ServiceError("Bad update reply: " + html)

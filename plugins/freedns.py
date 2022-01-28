@@ -39,7 +39,7 @@ class FreednsPlugin(ServicePlugin):
         """
         def build_shasum():
             """Compute sha1sum('user|password') used in url."""
-            user, password = get_netrc_auth('freedns.afraid.org')
+            user, password = get_netrc_auth('freedns.afraid.org', hostname)
             token = "{0}|{1}".format(user, password)
             return hashlib.sha1(token.encode()).hexdigest()
 

@@ -42,7 +42,7 @@ class NowDnsPlugin(ServicePlugin):
         url = self._url.format(hostname)
         if ip:
             url += '&myip=' + ip.v4
-        http_basic_auth_setup(url)
+        http_basic_auth_setup(url, targethost=hostname)
         html = get_response(log, request)
         if html not in ['good', 'nochg']:
             raise ServiceError('Bad server reply: ' + html)

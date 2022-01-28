@@ -36,7 +36,7 @@ class SystemNsPlugin(ServicePlugin):
 
     def register(self, log, hostname, ip, options):
         """Implement ServicePlugin.register()."""
-        password = get_netrc_auth('system-ns.com')[1]
+        password = get_netrc_auth('system-ns.com', hostname)[1]
         url = self._url.format(self._apihost, hostname, password)
         if ip:
             url += "&ip=" + ip.v4

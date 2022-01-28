@@ -43,7 +43,7 @@ class DnsexitPlugin(ServicePlugin):
         """Implement AddressPlugin.get_ip()."""
         if not ip:
             log.warn(self._ip_warning)
-        user, password = get_netrc_auth('update.dnsexit.com')
+        user, password = get_netrc_auth('update.dnsexit.com', hostname)
         url = self._url.format(
             self._update_host, user, password, hostname)
         if ip:

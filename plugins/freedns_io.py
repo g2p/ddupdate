@@ -35,7 +35,7 @@ class FreednsIoPlugin(ServicePlugin):
 
     def register(self, log, hostname, ip, options):
         """Implement ServicePlugin.register."""
-        user, password = get_netrc_auth('freedns.io')
+        user, password = get_netrc_auth('freedns.io', hostname)
         data = {
             'username': user,
             'password': password,

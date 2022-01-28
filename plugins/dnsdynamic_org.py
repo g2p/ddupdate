@@ -32,7 +32,7 @@ class DynamicDnsPlugin(ServicePlugin):
     def register(self, log, hostname, ip, options):
         """Implement ServicePlugin.register."""
         url = self._url.format(hostname)
-        http_basic_auth_setup(url)
+        http_basic_auth_setup(url, targethost=hostname)
         html = get_response(log, url)
         if html.split()[0] not in ['nochg', 'good']:
             raise ServiceError("Bad update reply: " + html)

@@ -30,19 +30,24 @@ from netrc import netrc
 URL_TIMEOUT = 120  # Default timeout in get_response()
 
 
-def http_basic_auth_setup(url, host=None):
+def http_basic_auth_setup(url, *, providerhost=None, targethost=None):
     """
     Configure urllib to provide basic authentication.
 
+    See get_netrc_auth for how providerhost and targethost
+    are resolved to credentials stored in netrc.
+
     Parameters:
         - url: string, the url to connect to.
-        - host: string, hostname looked up in .netrc. Defaults to
-          to hostname part of url.
-
+        - providerhost: string, a hostname representing the provider.
+          Defaults to the hostname part of url.
+        - targethost: string, the host being updated.  Optional, used
+          to discriminate hosts registered with different
+          credentials at the same provider.
     """
-    if not host:
-        host = urlparse(url).hostname
-    user, password = get_netrc_auth(host)
+    if not providerhost:
+        providerhost = urlparse(url).hostname
+    user, password = get_netrc_auth(providerhost, targethost)
     pwmgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
     pwmgr.add_password(None, url, user, password)
     auth_handler = urllib.request.HTTPBasicAuthHandler(pwmgr)
@@ -106,12 +111,20 @@ def get_response(log, url, **kwargs):
     return html
 
 
-def get_netrc_auth(machine):
+def get_netrc_auth(providerhost, targethost=None):
     """
     Retrieve data from  ~/-netrc or /etc/netrc.
 
+    Will look for matching identifiers in the netrc file.
+
+    If a targethost is passed, the first machine name we look for
+    is targethost.providerhost.ddupdate, falling back to providerhost.
+    If no targethost is passed, we only look for providerhost.
+
     Parameters:
-      - machine: key while searching in netrc file.
+      - providerhost: identifies the dns provider
+      - targethost: optional.  Allows selecting credentials for multiple
+        host names registered at the same provider.
     Returns:
       - A (user, password) tuple. User might be None.
     Raises:
@@ -126,11 +139,16 @@ def get_netrc_auth(machine):
         path = '/etc/netrc'
     else:
         raise ServiceError("Cannot locate the netrc file (see manpage).")
-    auth = netrc(path).authenticators(machine)
+    netrcdata = netrc(path)
+    if targethost is not None:
+        machine1 = "%s.%s.ddupdate" % (targethost, providerhost)
+        auth = netrcdata.authenticators(machine1) or netrcdata.authenticators(providerhost)
+    else:
+        auth = netrcdata.authenticators(providerhost)
     if not auth:
-        raise ServiceError("No .netrc data found for " + machine)
+        raise ServiceError("No .netrc data found for " + providerhost)
     if not auth[2]:
-        raise ServiceError("No password found for " + machine)
+        raise ServiceError("No password found for " + providerhost)
     return auth[0], auth[2]
 
 

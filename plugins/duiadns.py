@@ -65,7 +65,7 @@ class DuiadnsPlugin(ServicePlugin):
 
     def register(self, log, hostname, ip, options):
         """Implement ServicePlugin.register()."""
-        password = get_netrc_auth('ip.duiadns.net')[1]
+        password = get_netrc_auth('ip.duiadns.net', hostname)[1]
         url = self._url.format(hostname, password)
         if not ip:
             log.warn("This plugin requires an ip address.")

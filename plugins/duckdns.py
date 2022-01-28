@@ -33,7 +33,7 @@ class DuckdnsPlugin(ServicePlugin):
 
     def register(self, log, hostname, ip, options):
         """Implement ServicePlugin.register()."""
-        password = get_netrc_auth('www.duckdns.org')[1]
+        password = get_netrc_auth('www.duckdns.org', hostname)[1]
         host = hostname.split('.duckdns.org')[0]
         url = self._url.format(host, password)
         if ip and ip.v4:

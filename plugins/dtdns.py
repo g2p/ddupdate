@@ -32,7 +32,7 @@ class DtdnsPlugin(ServicePlugin):
 
     def register(self, log, hostname, ip, options):
         """Implement ServicePlugin.register()."""
-        user, password = get_netrc_auth('www.dtdns.com')
+        user, password = get_netrc_auth('www.dtdns.com', hostname)
         url = self._url.format(hostname, password)
         if ip:
             url += "&ip=" + ip.v4
